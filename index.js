@@ -283,7 +283,7 @@ app.get('/register',(req,res)=>{
     req.logout(function(err) {
         if (err) { return next(err); }
         req.flash('success','logged out successfully');
-        res.redirect('/');
+        res.redirect('/login');
       });
     
   })
