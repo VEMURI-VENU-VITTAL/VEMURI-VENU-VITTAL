@@ -120,7 +120,6 @@ const mailOptions={
 app.get('/',isLoggedIn,async (req,res)=>{
   const slips=await Auth.findById(req.user.id);
   const otp=req.cookies.otp;
-  console.log(otp)
   res.render('home.ejs',{slips,otp});
 })
 
@@ -134,7 +133,7 @@ app.get('/generate/otp',isLoggedIn,async (req,res)=>{
   res.cookie('otp',hash,{
     maxAge:1000*10*60
   });
-  console.log(otp);
+  
   const auth=await Auth.findById(req.user.id);
   mailOptions.to=auth.email;
   mailOptions.text+=otp.toString();
@@ -258,6 +257,8 @@ app.get('/register',(req,res)=>{
   })
 
   app.get('/login',(req,res)=>{
+    res.clearCookie('otp');
+    res.clearCookie('email');
     res.render('login.ejs');
   })
 
@@ -313,7 +314,6 @@ app.get('/register',(req,res)=>{
     })
     
     const auth=await Auth.findOne({email:req.body.email});
-    console.log(auth);
     mailOptions.to=auth.email;
     mailOptions.text+=otp.toString();
     transporter.sendMail(mailOptions, function(error,info){
@@ -330,13 +330,20 @@ app.get('/register',(req,res)=>{
 
   app.post('/change/password/part2',(req,res)=>{
     const {otp,email}=req.cookies;
-    if(bcrypt.compare(req.cookies.otp,otp)){
-      res.cookie('email',email,{
-        maxAge:1000*10*60,
-      })
-      req.flash('success','this form valid only 10 minutes');
-      res.redirect('/change/password/part3');
+    if(otp && email){
+      if(bcrypt.compare(req.cookies.otp,otp)){
+        res.cookie('email',email,{
+          maxAge:1000*10*60,
+        })
+        req.flash('success','this form valid only 10 minutes');
+        res.redirect('/change/password/part3');
+      }
     }
+    else{
+      res.clearCookie('otp');
+      res.clearCookie('email');
+    }
+    
   })
     
   app.get('/change/password/part1',(req,res)=>{
@@ -369,6 +376,8 @@ app.get('/register',(req,res)=>{
       res.redirect('/login') 
     }
     else{
+      res.clearCookie('otp');
+      res.clearCookie('email');
       req.flash('error','time expired!!')
       res.redirect('/login');
     }
