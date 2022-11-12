@@ -294,7 +294,7 @@ app.get('/register',(req,res)=>{
       res.render('change2.ejs',{email});
     }
     else{
-      res.redirect('/login');
+      res.render('login.ejs');
     }
     
   })
