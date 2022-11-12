@@ -259,6 +259,9 @@ app.get('/register',(req,res)=>{
   app.get('/login',(req,res)=>{
     res.clearCookie('otp');
     res.clearCookie('email');
+    if(req.user){
+      res.redirect('/');
+    }
     res.render('login.ejs');
   })
 
