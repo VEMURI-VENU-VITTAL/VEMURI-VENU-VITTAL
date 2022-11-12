@@ -300,9 +300,6 @@ app.get('/register',(req,res)=>{
   })
 
   app.post('/change/password', async (req,res)=>{
-    if(req.cookies.otp){
-      res.clearCookie('otp');
-    }
     const salt=await bcrypt.genSalt(10);
     const otp=Math.floor(Math.random()*(9999-1000)+1000);
     const hash=await bcrypt.hash(otp.toString(),salt);
