@@ -1,0 +1,44 @@
+<%layout('layouts/boilerplate')%>
+<%if(slips.status=='pending'){%>
+  <div class="card" style="width: 18rem;">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <a href="/generate/otp" class="btn btn-success" id="verify">VERIFY EMAIL</a>
+      </li>
+      <%if(otp){%>
+        <li class="list-group-item" id="valid">
+          <form action="/verify/otp" method="post">
+            <input type="text" name="otp" class="mb-3">
+            <button class="btn btn-danger">VALID OTP</button>
+          </form>
+        </li>
+      <%}%>
+      
+      
+    </ul>
+  </div>
+<%}%>
+<%for(let i=0;i<slips.notes.length;i++){%>
+    <%if(slips.notes[i].active!='lock'){%>
+        <div class="card" style="width: 18rem; min-height: 100px; display: inline-flex; margin-left: 30px;">
+            <div class="card-body">
+              <!-- <h5 class="card-title">Card title</h5> -->
+              <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+              <p class="card-text"><%=slips.notes[i].text%></p>
+              <a href="/slip/<%=i%>/edit" class="card-link"><img src="https://cdn.onlinewebfonts.com/svg/img_65577.png" alt="" style="width: 20px; height:20px"></a>
+              <%if(slips.notes[i].active=='free'){%>
+                <a href="/lock/<%=i%>"><img src="https://th.bing.com/th/id/R.84433a5cabc3f725c4d77031fabb9e39?rik=yI%2bKaRmw0OO1hw&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_133388.png&ehk=qc8ZuO6JUc8NSIffvolUYXGbr2gVBWiirp0ldA7lmIE%3d&risl=&pid=ImgRaw&r=0" alt="" style="width: 20px; height: 20px; margin-left: 5px;"></a>
+              <%}%>
+              <form action="/slip/<%=i%>/delete?_method=delete" method="post" style="display: inline;">
+                <button style="border: none; background-color: transparent;" class=""><img src="https://th.bing.com/th/id/R.27299b1faed2d63a3e9512bd8cd187ad?rik=%2fVRT3CdCaWVC3w&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fdelete-button-png-delete-icon-1600.png&ehk=mRIiUoExO9FPzeoYwqDk%2bfWDlxlcYGmfTbaQ2Pbwyak%3d&risl=&pid=ImgRaw&r=0" alt="" style="width: 20px; height: 20px"></button>
+              </form>
+              
+            </div>
+          </div>
+    <%}%>
+    
+<%}%>
+
+
+
+  

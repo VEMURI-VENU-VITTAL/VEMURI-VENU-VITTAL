@@ -1,0 +1,14 @@
+<% if(success && success.length){%>
+    <div class="alert alert-success alert-dismissable show fade" role="alert">
+        <%=success%>
+        <button type="button" class="btn-close alert-dismissable" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <%}%>
+    
+    
+    <% if(error && error.length){%>
+        <div class="alert alert-danger alert-dismissable show fade" role="alert">
+            <%=error%>
+            <button type="button" class="btn-close ml-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <%}%>

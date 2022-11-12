@@ -1,0 +1,15 @@
+<%layout('/layouts/boilerplate')%>
+
+<form action="/change/password/part2" method="post">
+    <div class="md-6 mb-3">
+        <label for="email" class="form-label">email</label>
+        <input type="email" class="form-control" id="email" name="email" value=<%=email%> disabled>
+      </div>
+
+      <div class="md-6 mb-3">
+        <label for="otp" class="form-label">enter otp</label>
+        <input type="text" class="form-control" id="otp" name="otp" required>
+      </div>
+
+      <button class="btn btn-success">verify otp</button>
+</form>
