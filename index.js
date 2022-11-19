@@ -252,7 +252,7 @@ app.get('/register',(req,res)=>{
     }
     catch(e){
         req.flash('error',e.message)
-        res.redirect('/todo');
+        res.redirect('/');
     }
   })
 
