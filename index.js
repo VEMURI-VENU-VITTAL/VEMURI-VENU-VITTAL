@@ -28,7 +28,7 @@ const bcrypt=require('bcrypt');
 const cookieParser=require('cookie-parser');
 const nodemailer=require('nodemailer');
 
-const dbUrl= 'mongodb://localhost:27017/otp';
+const dbUrl= process.env.DB_URL||'mongodb://localhost:27017/otp';
 const secret= process.env.SECRET || 'thisshouldbeabettersecret';
 
 
@@ -383,7 +383,7 @@ app.get('/register',(req,res)=>{
       }
     }
     else{
-      
+
       res.clearCookie('otp');
       res.clearCookie('email');
     }
