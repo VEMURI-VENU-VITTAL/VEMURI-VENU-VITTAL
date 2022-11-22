@@ -28,7 +28,7 @@ const bcrypt=require('bcrypt');
 const cookieParser=require('cookie-parser');
 const nodemailer=require('nodemailer');
 
-const dbUrl= process.env.DB_URL || 'mongodb://localhost:27017/otp';
+const dbUrl= 'mongodb://localhost:27017/otp';
 const secret= process.env.SECRET || 'thisshouldbeabettersecret';
 
 
@@ -206,14 +206,34 @@ app.get('/slip/:num/edit', isLoggedIn, (req,res)=>{
   res.render('editslip.ejs', {slip,num});
 })
 
-app.patch('/editslip',isLoggedIn,async (req,res)=>{
+app.patch('/editslip',upload.array('image'),isLoggedIn,async (req,res)=>{
   console.log(req.body.num);
   const {num,text,active}=req.body;
   const slip=await Auth.findById(req.user.id);
+  console.log(req.files);
+  try{
+    for(let i=0;i<req.files.length;i++){
+      const ne={
+          url:req.files[i].path,
+          filename:req.files[i].filename
+      }
+      slip.notes[num].image.push(ne);
+      
+  }
+  }
+  catch{}
+  
   slip.notes[num].text=text;
   slip.notes[num].active=active;
   await slip.save();
   res.redirect('/');
+})
+
+app.get('/slip/:i/view', async(req,res)=>{
+  const {i}=req.params;
+  const auth=await Auth.findById(req.user.id);
+  const notes=auth.notes[i];
+  res.render('view.ejs',{auth,notes});
 })
 
 app.post('/addslip',isLoggedIn,async (req,res)=>{
@@ -227,12 +247,35 @@ app.post('/addslip',isLoggedIn,async (req,res)=>{
   res.redirect('/');
 })
 
+// app.post('/slip/:num/addimg',upload.array('image'),async (req,res)=>{
+//   const {num}=req.params;
+//   const auth=await Auth.findById(req.user.id);
+//   console.log(req.files);
+//   for(let i=0;i<req.files.length;i++){
+//     const ne={
+//         url:req.files[i].path,
+//         filename:req.files[i].filename
+//     }
+//     auth.notes[num].image.push(ne);
+    
+// }
+// await auth.save();
+// })
+
 app.delete('/slip/:num/delete',isLoggedIn,async (req,res)=>{
   const {num}=req.body;
   const slip=await Auth.findById(req.user.id);
   slip.notes.pop(num);
   await slip.save();
   res.redirect('/');
+})
+
+app.delete('/slip/:num/:i/delete', async(req,res)=>{
+  const {num,i}=req.params;
+  const auth=await Auth.findById(req.user.id);
+  auth.notes[num].image.splice(i,1);
+  await auth.save();
+  res.redirect(`/slip/${num}/edit`);
 })
 
 app.get('/register',(req,res)=>{
@@ -340,6 +383,7 @@ app.get('/register',(req,res)=>{
       }
     }
     else{
+      
       res.clearCookie('otp');
       res.clearCookie('email');
     }

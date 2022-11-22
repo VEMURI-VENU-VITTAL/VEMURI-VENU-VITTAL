@@ -1,0 +1,20 @@
+<%layout('/layouts/boilerplate')%>
+
+<h1>Images!!!</h1>
+<%for(let i=0;i<notes.image.length;i++){%>
+    <img src="<%=notes.image[i].url%>" alt="" style="height:300px; width:300px; margin: 20px;">
+<%}%>
+
+<h1>Data</h1>
+
+<div class="mb-3" >
+    <label for="text" class="form-label">your data</label>
+    <textarea class="form-control" id="text" rows="3" name="text" style="width: 250px;" disabled><%=notes.text%></textarea>
+  </div>
+
+  <h1>Security Level</h1>
+
+  <div class="md-6 mb-3">
+    <label for="security" class="form-label" style="color: white;">Security</label>
+    <input type="text" class="form-control" id="security" name="security" style="width: 250px;" value="<%=notes.active%>" disabled>
+  </div>

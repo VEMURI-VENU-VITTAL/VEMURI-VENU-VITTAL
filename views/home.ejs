@@ -29,10 +29,10 @@
               <%if(slips.notes[i].active=='free'){%>
                 <a href="/lock/<%=i%>"><img src="https://th.bing.com/th/id/R.84433a5cabc3f725c4d77031fabb9e39?rik=yI%2bKaRmw0OO1hw&riu=http%3a%2f%2fcdn.onlinewebfonts.com%2fsvg%2fimg_133388.png&ehk=qc8ZuO6JUc8NSIffvolUYXGbr2gVBWiirp0ldA7lmIE%3d&risl=&pid=ImgRaw&r=0" alt="" style="width: 20px; height: 20px; margin-left: 5px;"></a>
               <%}%>
+              <a href="/slip/<%=i%>/view"><img src="https://image.freepik.com/free-icon/view_318-31764.jpg" alt="" style="height: 20px; width: 20px"></a>
               <form action="/slip/<%=i%>/delete?_method=delete" method="post" style="display: inline;">
                 <button style="border: none; background-color: transparent;" class=""><img src="https://th.bing.com/th/id/R.27299b1faed2d63a3e9512bd8cd187ad?rik=%2fVRT3CdCaWVC3w&riu=http%3a%2f%2fpluspng.com%2fimg-png%2fdelete-button-png-delete-icon-1600.png&ehk=mRIiUoExO9FPzeoYwqDk%2bfWDlxlcYGmfTbaQ2Pbwyak%3d&risl=&pid=ImgRaw&r=0" alt="" style="width: 20px; height: 20px"></button>
               </form>
-              
             </div>
           </div>
     <%}%>

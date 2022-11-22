@@ -11,8 +11,12 @@ const AuthSchema=new Schema({
     notes:[{
         text:String,
         active:String,
+        image:[{
+            url:String,
+            filename: String
+        }],
     }],
-    status:String
+    status:String,
 })
 
 AuthSchema.plugin(passportLocalMongoose);

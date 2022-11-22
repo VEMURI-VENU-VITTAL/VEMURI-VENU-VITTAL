@@ -1,11 +1,16 @@
 <%layout('layouts/boilerplate')%>
 
-<form action="/editslip?_method=patch" method="post">
+<form action="/editslip?_method=patch" method="post" enctype="multipart/form-data">
     <input type="text" value="<%=num%>" style="width: 20px; height:20px; border-radius: 50%; display: none;" name="num">
     <div class="mb-3" >
         <label for="text" class="form-label">Enter text</label>
         <textarea class="form-control" id="text" rows="3" name="text" style="width: 250px;" required><%=slip.text%></textarea>
       </div>
+
+      <div class="mb-3">
+        <input type="file" name="image" id="image">            
+      </div>
+        
 
       <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="lock_category" name="active" style="width: 250px;">
         <option value="unsecure" selected>unsecured</option>
@@ -14,3 +19,19 @@
       
       <button>EDIT slip</button>
 </form>
+
+<h1>Image Section</h1>
+<%for(let i=0;i<slip.image.length;i++){%>
+  <div style="display: inline-flex; margin: 10px;">
+    <div class="mb-3" style="">
+      <img src="<%=slip.image[i].url%>" alt="" style="height: 300px; width: 300px;">
+      <div style="margin-left: 125px; margin-top: 10px; ">
+        <form action="/slip/<%=num%>/<%=i%>/delete?_method=delete" method="post">
+          <button>Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  
+<%}%>
