@@ -27,6 +27,7 @@ const MongoDBStore=require("connect-mongo")(session);
 const bcrypt=require('bcrypt');
 const cookieParser=require('cookie-parser');
 const nodemailer=require('nodemailer');
+const cryptojs=require("crypto-js");
 
 const dbUrl= process.env.DB_URL||'mongodb://localhost:27017/otp';
 const secret= process.env.SECRET || 'thisshouldbeabettersecret';
@@ -117,8 +118,22 @@ const mailOptions={
   text: 'Dont share otp to anyone, your otp is: '
 };
 
+function encrypt(a){
+  let encrypteddata=cryptojs.AES.encrypt(a, secret).toString();
+  return encrypteddata;
+}
+
+function decrypt(a){
+  let bytes=cryptojs.AES.decrypt(a, secret);
+  let decryptedemail=bytes.toString(cryptojs.enc.Utf8);
+  return decryptedemail;
+}
+
 app.get('/',isLoggedIn,async (req,res)=>{
   const slips=await Auth.findById(req.user.id);
+  for(let i=0;i<slips.notes.length;i++){
+    slips.notes[i].text=decrypt(slips.notes[i].text);
+  }
   const otp=req.cookies.otp;
   res.render('home.ejs',{slips,otp});
 })
@@ -203,6 +218,10 @@ app.get('/addslip',isLoggedIn,(req,res)=>{
 app.get('/slip/:num/edit', isLoggedIn, (req,res)=>{
   const {num}=req.params;
   const slip=req.user.notes[num];
+  slip.text=decrypt(slip.text);
+  for(let i=0;i<slip.image.length;i++){
+    slip.image[i].url=decrypt(slip.image[i].url);
+  }
   res.render('editslip.ejs', {slip,num});
 })
 
@@ -210,37 +229,52 @@ app.patch('/editslip',upload.array('image'),isLoggedIn,async (req,res)=>{
   console.log(req.body.num);
   const {num,text,active}=req.body;
   const slip=await Auth.findById(req.user.id);
-  console.log(req.files);
+  
   try{
     for(let i=0;i<req.files.length;i++){
       const ne={
-          url:req.files[i].path,
+          url:encrypt(req.files[i].path),
           filename:req.files[i].filename
       }
       slip.notes[num].image.push(ne);
-      
   }
   }
   catch{}
   
-  slip.notes[num].text=text;
+  slip.notes[num].text=encrypt(text);
   slip.notes[num].active=active;
   await slip.save();
   res.redirect('/');
 })
 
-app.get('/slip/:i/view', async(req,res)=>{
+app.get('/slip/:i/view', isLoggedIn, async(req,res)=>{
   const {i}=req.params;
   const auth=await Auth.findById(req.user.id);
   const notes=auth.notes[i];
+  notes.text=decrypt(notes.text);
+  for(let j=0;j<notes.image.length;j++){
+    notes.image[j].url=decrypt(notes.image[j].url);
+  }
   res.render('view.ejs',{auth,notes});
 })
 
-app.post('/addslip',isLoggedIn,async (req,res)=>{
+app.post('/addslip',upload.array('image'),isLoggedIn,async (req,res)=>{
   const {text,active}=req.body;
   const auth=await Auth.findById(req.user.id);
   const notes={};
-  notes['text']=text;
+  notes['image']=[];
+  console.log(req.files);
+  try{
+    for(let i=0;i<req.files.length;i++){
+      const ne={
+          url:encrypt(req.files[i].path),
+          filename:req.files[i].filename
+      }
+      notes['image'].push(ne);
+  }
+  }
+  catch{}
+  notes['text']=encrypt(text);
   notes['active']=active;
   auth.notes.push(notes);
   await auth.save();
@@ -270,7 +304,7 @@ app.delete('/slip/:num/delete',isLoggedIn,async (req,res)=>{
   res.redirect('/');
 })
 
-app.delete('/slip/:num/:i/delete', async(req,res)=>{
+app.delete('/slip/:num/:i/delete', isLoggedIn, async(req,res)=>{
   const {num,i}=req.params;
   const auth=await Auth.findById(req.user.id);
   auth.notes[num].image.splice(i,1);
@@ -315,7 +349,7 @@ app.get('/register',(req,res)=>{
     res.redirect(redirectUrl);
   })
 
-  app.get('/logout',async (req,res)=>{
+  app.get('/logout',isLoggedIn,async (req,res)=>{
     const slip=await Auth.findById(req.user.id);
     for(let i=0;i<slip.notes.length;i++){
       if(slip.notes[i].active=='free'){
@@ -442,3 +476,4 @@ const port=process.env.PORT || 3000;
   app.listen(port, ()=>{
     console.log(`serving on port ${port}!`);
 })
+
