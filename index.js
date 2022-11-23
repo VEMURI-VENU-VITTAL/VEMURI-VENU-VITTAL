@@ -401,7 +401,7 @@ app.get('/register',(req,res)=>{
         console.log('Email sent: '+info.response);
       }
     })
-    mailOptions.text='Dont share otp to anyone, your otp is: ';
+    mailOptions.text='We have received your request for the OTP. \n Here is your otp. ';
     res.redirect('/change/password/part2');
   })
 
