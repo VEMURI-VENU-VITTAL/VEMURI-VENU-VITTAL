@@ -2,16 +2,16 @@
 
 <form action="/addslip" method="post" enctype="multipart/form-data">
     <div class="mb-3" >
-        <label for="text" class="form-label">Enter text</label>
+        <label for="text" class="form-label" style="color: white;">Enter text</label>
         <textarea class="form-control" id="text" rows="3" name="text" style="width: 500px;" required></textarea>
       </div>
       <div class="mb-3">
-        <input type="file" name="image" id="image">            
+        <input type="file" name="image" id="image" style="color: white;">            
       </div>
-      <label for="lock_category">Security level</label>
+      <label for="lock_category" style="color: white;">Security level</label>
       <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="lock_category" name="active" style="width: 250px;">
         <option value="unsecure" selected>unsecured</option>
         <option value="free">secured</option>
       </select>
-      <button>Add slip</button>
+      <button class="btn btn-success">Add slip</button>
 </form>

@@ -3,12 +3,12 @@
 <form action="/editslip?_method=patch" method="post" enctype="multipart/form-data">
     <input type="text" value="<%=num%>" style="width: 20px; height:20px; border-radius: 50%; display: none;" name="num">
     <div class="mb-3" >
-        <label for="text" class="form-label">Enter text</label>
+        <label for="text" class="form-label" style="color: white;">Enter text</label>
         <textarea class="form-control" id="text" rows="3" name="text" style="width: 250px;" required><%=slip.text%></textarea>
       </div>
 
       <div class="mb-3">
-        <input type="file" name="image" id="image">            
+        <input type="file" name="image" id="image" style="color: white;">            
       </div>
         
 
@@ -17,7 +17,7 @@
         <option value="free">secured</option>
       </select>
       
-      <button>EDIT slip</button>
+      <button class="btn btn-success">EDIT slip</button>
 </form>
 
 <h1>Image Section</h1>

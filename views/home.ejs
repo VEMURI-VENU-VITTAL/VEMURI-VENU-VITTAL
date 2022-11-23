@@ -2,11 +2,11 @@
 <%if(slips.status=='pending'){%>
   <div class="card" style="width: 10rem;">
     <ul class="list-group list-group-flush">
-      <%if(!otp){%>
+      
         <li class="list-group-item">
           <a href="/generate/otp" class="btn btn-success" id="verify">VERIFY EMAIL</a>
         </li>
-      <%}%>
+      
     
       <%if(otp){%>
         <li class="list-group-item" id="valid">
