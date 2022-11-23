@@ -115,7 +115,7 @@ const mailOptions={
   from:'ucs20435@rmd.ac.in',
   to:'',
   subject: 'OTP verification from project user',
-  text: 'Dont share otp to anyone, your otp is: '
+  text: 'We have received your request for the OTP. \n Here is your otp. '
 };
 
 function encrypt(a){
@@ -160,7 +160,7 @@ app.get('/generate/otp',isLoggedIn,async (req,res)=>{
       console.log('Email sent: '+info.response);
     }
   })
-  mailOptions.text='Dont share otp to anyone, your otp is: ';
+  mailOptions.text='We have received your request for the OTP. \n Here is your otp. ';
   res.redirect('/');
 })
 

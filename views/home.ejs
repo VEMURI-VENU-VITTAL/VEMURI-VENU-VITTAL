@@ -1,14 +1,17 @@
 <%layout('layouts/boilerplate')%>
 <%if(slips.status=='pending'){%>
-  <div class="card" style="width: 18rem;">
+  <div class="card" style="width: 10rem;">
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">
-        <a href="/generate/otp" class="btn btn-success" id="verify">VERIFY EMAIL</a>
-      </li>
+      <%if(!otp){%>
+        <li class="list-group-item">
+          <a href="/generate/otp" class="btn btn-success" id="verify">VERIFY EMAIL</a>
+        </li>
+      <%}%>
+    
       <%if(otp){%>
         <li class="list-group-item" id="valid">
           <form action="/verify/otp" method="post">
-            <input type="text" name="otp" class="mb-3">
+            <input type="text" name="otp" class="mb-3" style="width: 100px;">
             <button class="btn btn-danger">VALID OTP</button>
           </form>
         </li>
