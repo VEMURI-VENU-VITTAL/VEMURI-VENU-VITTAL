@@ -381,7 +381,7 @@ app.get('/register',(req,res)=>{
 
   app.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}),(req,res)=>{
     req.flash('success','You have successfully logged');
-    const redirectUrl=req.session.returnTo || '/';
+    const redirectUrl='/';
     delete req.session.returnTo;
     res.redirect(redirectUrl);
   })
