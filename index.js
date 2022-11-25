@@ -316,13 +316,16 @@ app.delete('/slip/:num/:i/delete', isLoggedIn, async(req,res)=>{
 })
 
 function isValidPassword(s){
-  let u=0,l=0,sym=0;
+  let u=0,l=0,sym=0,d=0;
   for(let i=0;i<s.length;i++){
     if(s[i]>='a' && s[i]<='z'){
       l+=1;
     }
     else if(s[i]>='A' && s[i]<='Z'){
       u+=1;
+    }
+    else if(s[i]>='0' && s[i]<='9'){
+      d+=1;
     }
     else if(s[i]==' '){
       return false;
@@ -331,7 +334,7 @@ function isValidPassword(s){
       sym+=1;
     }
   }
-  if(s.length>=8 && u>=1 && l>=1 && sym>=1){
+  if(s.length>=8 && u>=1 && l>=1 && sym>=1 && d>=1){
     return true;
   }
   else{
