@@ -133,6 +133,7 @@ app.get('/',isLoggedIn,async (req,res)=>{
   const slips=await Auth.findById(req.user.id);
   for(let i=0;i<slips.notes.length;i++){
     slips.notes[i].text=decrypt(slips.notes[i].text);
+    slips.notes[i].title=decrypt(slips.notes[i].title);
   }
   const otp=req.cookies.otp;
   res.render('home.ejs',{slips,otp});
@@ -161,6 +162,7 @@ app.get('/generate/otp',isLoggedIn,async (req,res)=>{
     }
   })
   mailOptions.text='We have received your request for the OTP. \n Here is your otp. ';
+  req.flash('success','your otp is generated please check your mail id!!');
   res.redirect('/');
 })
 
@@ -259,7 +261,7 @@ app.get('/slip/:i/view', isLoggedIn, async(req,res)=>{
 })
 
 app.post('/addslip',upload.array('image'),isLoggedIn,async (req,res)=>{
-  const {text,active}=req.body;
+  const {text,active,title}=req.body;
   const auth=await Auth.findById(req.user.id);
   const notes={};
   notes['image']=[];
@@ -274,6 +276,7 @@ app.post('/addslip',upload.array('image'),isLoggedIn,async (req,res)=>{
   }
   }
   catch{}
+  notes['title']=encrypt(title);
   notes['text']=encrypt(text);
   notes['active']=active;
   auth.notes.push(notes);
@@ -299,7 +302,7 @@ app.post('/addslip',upload.array('image'),isLoggedIn,async (req,res)=>{
 app.delete('/slip/:num/delete',isLoggedIn,async (req,res)=>{
   const {num}=req.body;
   const slip=await Auth.findById(req.user.id);
-  slip.notes.pop(num);
+  slip.notes.splice(num,1);
   await slip.save();
   res.redirect('/');
 })
@@ -312,25 +315,56 @@ app.delete('/slip/:num/:i/delete', isLoggedIn, async(req,res)=>{
   res.redirect(`/slip/${num}/edit`);
 })
 
+function isValidPassword(s){
+  let u=0,l=0,sym=0;
+  for(let i=0;i<s.length;i++){
+    if(s[i]>='a' && s[i]<='z'){
+      l+=1;
+    }
+    else if(s[i]>='A' && s[i]<='Z'){
+      u+=1;
+    }
+    else if(s[i]==' '){
+      return false;
+    }
+    else{
+      sym+=1;
+    }
+  }
+  if(s.length>=8 && u>=1 && l>=1 && sym>=1){
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 app.get('/register',(req,res)=>{
     res.render('register.ejs')
   })
 
   app.post('/register',async (req,res)=>{
-    try{
     const {email,username,password}=req.body;
-    const auth=await new Auth({email,username,status:'pending'});
-    const registeredUser=await Auth.register(auth,password);
-    req.login(registeredUser, err=>{
-        if(err) return next(err);
-        req.flash('success','successfully logged in!!')
-        res.redirect('/');
-    })
+    if(isValidPassword(password)){
+      try{
+        const auth=await new Auth({email,username,status:'pending'});
+        const registeredUser=await Auth.register(auth,password);
+        req.login(registeredUser, err=>{
+            if(err) return next(err);
+            req.flash('success','successfully logged in!!')
+            res.redirect('/');
+        })
+        }
+        catch(e){
+            req.flash('error',e.message)
+            res.redirect('/');
+        }
     }
-    catch(e){
-        req.flash('error',e.message)
-        res.redirect('/');
+    else{
+      req.flash('error', "please enter valid password");
+      res.redirect('/register');
     }
+    
   })
 
   app.get('/login',(req,res)=>{
@@ -445,20 +479,27 @@ app.get('/register',(req,res)=>{
     //     res.send("password changed");
     //   }
     // });
-    if(password==newpassword){
-      await user.setPassword(req.body.password);
-      const updatedUser = await user.save();
-      req.flash('success', 'Password Changed Successfully') 
-      res.clearCookie('email');
-      res.clearCookie('otp');
-      res.redirect('/login') 
+    if(isValidPassword(password)){
+      if(password==newpassword){
+        await user.setPassword(req.body.password);
+        const updatedUser = await user.save();
+        req.flash('success', 'Password Changed Successfully') 
+        res.clearCookie('email');
+        res.clearCookie('otp');
+        res.redirect('/login') 
+      }
+      else{
+        res.clearCookie('otp');
+        res.clearCookie('email');
+        req.flash('error','time expired!!')
+        res.redirect('/login');
+      }
     }
     else{
-      res.clearCookie('otp');
-      res.clearCookie('email');
-      req.flash('error','time expired!!')
+      req.flash('error', "please check validity of a password");
       res.redirect('/login');
     }
+    
   
   })
 

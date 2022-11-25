@@ -9,6 +9,7 @@ const AuthSchema=new Schema({
         unique:true
     },
     notes:[{
+        title:String,
         text:String,
         active:String,
         image:[{

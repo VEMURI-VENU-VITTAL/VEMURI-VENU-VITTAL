@@ -1,6 +1,8 @@
 <%layout('/layouts/boilerplate')%>
+<%if(notes.image.length!=0){%>
+  <h1 style="color: white;">Images!!!</h1>
+<%}%>
 
-<h1 style="color: white;">Images!!!</h1>
 <%for(let i=0;i<notes.image.length;i++){%>
     <img src="<%=notes.image[i].url%>" alt="" style="height:300px; width:300px; margin: 20px;">
 <%}%>

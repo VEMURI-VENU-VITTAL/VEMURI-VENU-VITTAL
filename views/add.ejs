@@ -1,6 +1,10 @@
 <%layout('layouts/boilerplate')%>
 
 <form action="/addslip" method="post" enctype="multipart/form-data">
+  <div class="mb-3" >
+    <label for="title" class="form-label" style="color: white;">Title</label>
+    <input class="form-control" id="title" rows="3" name="title" style="width: 500px;" required></input>
+  </div>
     <div class="mb-3" >
         <label for="text" class="form-label" style="color: white;">Enter text</label>
         <textarea class="form-control" id="text" rows="3" name="text" style="width: 500px;" required></textarea>
