@@ -380,7 +380,7 @@ app.get('/register',(req,res)=>{
   })
 
   app.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}),(req,res)=>{
-    req.flash('success','welcome back');
+    req.flash('success','You have successfully logged in!!');
     const redirectUrl=req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect(redirectUrl);
