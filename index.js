@@ -348,6 +348,7 @@ app.get('/register',(req,res)=>{
 
   app.post('/register',async (req,res)=>{
     const {email,username,password}=req.body;
+    if(isValidPassword(password)){
       try{
         const auth=await new Auth({email,username,status:'pending'});
         const registeredUser=await Auth.register(auth,password);
@@ -361,7 +362,11 @@ app.get('/register',(req,res)=>{
             req.flash('error',e.message)
             res.redirect('/');
         }
-    
+    }
+    else{
+      req.flash('error', "please enter valid password");
+      res.redirect('/register');
+    }
     
   })
 
@@ -375,7 +380,7 @@ app.get('/register',(req,res)=>{
   })
 
   app.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}),(req,res)=>{
-    
+    req.flash('success','You have successfully logged');
     const redirectUrl=req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect(redirectUrl);
