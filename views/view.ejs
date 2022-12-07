@@ -4,12 +4,9 @@
 <%}%>
 
 <%for(let i=0;i<notes.image.length;i++){%>
-    <%try {%>
-      <img src="<%=notes.image[i].url%>" alt="" style="height:300px; width:300px; margin: 20px;">
-      <object data="<%=notes.image[i].url%>" type="" height="300px" width="300px"></object>
-    <%} catch (error) {%>
-      <embed src="<%=notes.image[i].url%>" type="application/pdf" width="300px" height="300px">
-    <%}%>
+    
+    <img src="<%=notes.image[i].url%>" alt="" style="height:300px; width:300px; margin: 20px;">
+    
     
 <%}%>
 
