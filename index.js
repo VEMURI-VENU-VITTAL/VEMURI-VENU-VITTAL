@@ -257,6 +257,7 @@ app.get('/slip/:i/view', isLoggedIn, async(req,res)=>{
   for(let j=0;j<notes.image.length;j++){
     notes.image[j].url=decrypt(notes.image[j].url);
   }
+  console.log(notes);
   res.render('view.ejs',{auth,notes});
 })
 
